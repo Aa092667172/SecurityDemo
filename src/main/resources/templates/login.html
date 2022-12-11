@@ -6,10 +6,10 @@
 </head>
 <body>
     <h1>用戶登錄</h1>
-    <form action="">
-        用戶名: <input type="text" name="user"/>
+    <form th:action="@{/dologin}" method="post" >
+        用戶名: <input type="text" name="uName"/>
         <br>
-        密碼:   <input type="text" name="password"/>
+        密碼:   <input type="text" name="pd"/>
         <br>
         <input type="submit" value="登入" >
     </form>

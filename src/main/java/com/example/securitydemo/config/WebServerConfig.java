@@ -25,12 +25,34 @@ public class WebServerConfig {
         http.authorizeHttpRequests(
                 (authorizeHttpRequests) ->{
                     try {
-                        authorizeHttpRequests.requestMatchers("/login")
-                                .permitAll()
+                        authorizeHttpRequests
+                                //針對登入頁做放行
+                                .requestMatchers("/login.html").permitAll()
+                                .requestMatchers("/index").permitAll()
                                 .anyRequest()
+                                //任何請求皆驗證
                                 .authenticated()
+                                //並且使用form表單登入
                                 .and()
-                                .formLogin();
+                                .formLogin()
+                                //設置登入頁面為templates中的login.html
+                                //從formlogin源碼得知,需滿足下列條件
+                                //api path為login 並且為form表單且method為post
+                                //預設inputName loginName=username loginPassword = password
+                                .loginPage("/login.html")
+                                //指定處理登入的url
+                                .loginProcessingUrl("/dologin")
+                                //更改input欄位的名稱
+                                .usernameParameter("uName")
+                                .passwordParameter("pd")
+                                //以下三個method適用於傳統web開發
+                                //成功導入 forward
+//                                .successForwardUrl("/index") //始終在認證成功後跳轉到指定的路徑
+                                //重定向 redirect 會根據上一次保存的請求對應做跳轉 有多載布林 為true時與上方相同
+                                .defaultSuccessUrl("/index")
+                                .failureForwardUrl("/login")
+                                //禁止csrf跨站請求登入
+                                .and().csrf().disable();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
